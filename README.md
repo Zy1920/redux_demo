@@ -161,7 +161,7 @@ export function addGUNAsync() {
 - react-redux提供provider和connect两个接口来连接
 - index.js改写
 
-```java
+```javascript
 import React from "react"
 import ReactDom from "react-dom"
 import App from "./App"
