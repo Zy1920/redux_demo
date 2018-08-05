@@ -118,10 +118,10 @@ export default App
 
 ### redux处理异步
 
-- 安装redux-chunk插件
+- 安装redux-thunk插件
 
 ```javascript
-npm install redux-chunk --save
+npm install redux-thunk --save
 ```
 
 - 使用applyMiddleware开启thunk中间件
@@ -143,5 +143,119 @@ export function addGUNAsync() {
         },2000)
     }
 }
+```
+
+### chorme中redux调试工具
+
+- chrome搜素redux安装
+- 新建store的时候判断window.devToolsExtension
+- 使用compose结合thunk和window.devToolsExtension
+- 调试窗的redux选项卡，实时看到state
+
+
+
+### 使用react-redux
+
+- npm install react-redux --save
+- 忘记subscribe，记住reducer，action和dispatch即可
+- react-redux提供provider和connect两个接口来连接
+- index.js改写
+
+```java
+import React from "react"
+import ReactDom from "react-dom"
+import App from "./App"
+import { createStore ,applyMiddleware,compose } from "redux"
+import thunk from "redux-thunk"
+import { Provider } from "react-redux"
+import { counter} from "./index.redux";
+
+//react和redux建立连接的方式
+//1.引入store 新建一个store
+const store=createStore(counter,compose(
+    applyMiddleware(thunk)
+))
+
+//1.provider组建在应用最外层，传入store即可，只用一次
+ReactDom.render(
+    <Provider store={store}>
+        <App  />
+    </Provider>,
+    document.getElementById("root")
+)
+```
+
+- app.js改写
+
+```javascript
+import React from "react"
+import { connect }  from "react-redux"
+import {addGUN,removeGUN,addGUNAsync} from "./index.redux";
+
+const mapStatetoProps=(state)=>{
+    return {num:state}
+}
+const actionCreators={ addGUN, removeGUN, addGUNAsync}
+
+//2.connect负责从外部获取组建需要的参数
+App=connect(mapStatetoProps,actionCreators)(App)
+
+class App extends React.Component{
+    render(){
+        //4.app内部通过属性获取store及相应的方法
+        return(
+            <div>
+                <h1>现在有机枪{this.props.num}把</h1>
+                <button onClick={this.props.addGUN}>申请武器</button>
+                <button onClick={this.props.removeGUN}>上交武器</button>
+                <button onClick={this.props.addGUNAsync}>延迟发放武器</button>
+            </div>
+            )
+    }
+}
+
+export default App
+```
+
+### connect装饰器的方法简化书写
+
+- 运行npm run eject，package.json中显示全部的配置
+- npm install  babel-plugin-transform-decorators-legacy --save 安装装饰器相关的插件
+- 修改package.json配置 babel中添加配置
+
+```javascript
+"babel": {
+    "plugins":["transform-decorators-legacy"]
+  },
+```
+
+- app.js代码改编
+
+```javascript
+import React from "react"
+import { connect }  from "react-redux"
+import {addGUN,removeGUN,addGUNAsync} from "./index.redux";
+
+@connect(
+    //你要state什么属性 放到props里
+    state=>({num:state}),
+    //你要什么方法，放到props里，自动dispatch
+    {addGUN , removeGUN, addGUNAsync}
+)
+class App extends React.Component{
+    render(){
+        //4.app内部通过属性获取store及相应的方法
+        return(
+            <div>
+                <h1>现在有机枪{this.props.num}把</h1>
+                <button onClick={this.props.addGUN}>申请武器</button>
+                <button onClick={this.props.removeGUN}>上交武器</button>
+                <button onClick={this.props.addGUNAsync}>延迟发放武器</button>
+            </div>
+            )
+    }
+}
+
+export default App
 ```
 

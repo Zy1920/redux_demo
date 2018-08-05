@@ -2,6 +2,12 @@ import React from "react"
 import { connect }  from "react-redux"
 import {addGUN,removeGUN,addGUNAsync} from "./index.redux";
 
+@connect(
+    //你要state什么属性 放到props里
+    state=>({num:state}),
+    //你要什么方法，放到props里，自动dispatch
+    {addGUN , removeGUN, addGUNAsync}
+)
 class App extends React.Component{
     render(){
         //4.app内部通过属性获取store及相应的方法
@@ -15,12 +21,5 @@ class App extends React.Component{
             )
     }
 }
-const mapStatetoProps=(state)=>{
-    return {num:state}
-}
-const actionCreators={ addGUN, removeGUN, addGUNAsync}
-
-//2.connect负责从外部获取组建需要的参数
-App=connect(mapStatetoProps,actionCreators)(App)
 
 export default App
