@@ -33,3 +33,86 @@ function listener(){
 }
 ```
 
+
+
+### 手动实现 redux结合react使用
+
+- 状态单独抽取出来 reducer
+
+```javascript
+const ADD_GUN="加机关枪"
+const REMOVE_GUN="减机关枪"
+
+//reducer
+export function counter(state=0,action) {
+    switch (action.type){
+        case ADD_GUN:
+            return state+1;
+        case REMOVE_GUN:
+            return state-1;
+        default :
+            return 10;
+    }
+}
+
+//action creator
+export function addGUN() {
+    return {type:ADD_GUN}
+}
+//action creator
+export function removeGUN() {
+    return {type:REMOVE_GUN}
+}
+```
+
+
+
+- index引入store
+
+```javascript
+import React from "react"
+import ReactDom from "react-dom"
+import App from "./App"
+import { createStore } from "redux"
+import { counter,addGUN,removeGUN } from "./index.redux";
+
+//react和redux建立连接的方式
+//1.引入store 新建一个store
+const store=createStore(counter)
+
+function render(){
+    //2.将store以组件属性的形式传递给子组件
+    ReactDom.render(<App store={store} addGUN={addGUN} removeGUN={removeGUN}/>,document.getElementById("root"))
+}
+render()
+
+//3.外界用subscribe订阅render函数 状态变化即重新渲染整个界面
+store.subscribe(render)
+```
+
+- app修改状态
+
+```javascript
+import React from "react"
+
+class App extends React.Component{
+    render(){
+        //4.app内部通过属性获取store及相应的方法
+        const store=this.props.store
+        const addGUN=this.props.addGUN
+        const removeGUN=this.props.removeGUN
+        const num=store.getState()
+        return(
+            <div>
+                <h1>现在有机枪{num}把</h1>
+                //5.通过dispatch完成状态的修改
+                <button onClick={()=>store.dispatch(addGUN())}>申请武器</button>
+                <button onClick={()=>store.dispatch(removeGUN())}>上交武器</button>
+            </div>
+            )
+    }
+}
+
+export default App
+```
+
