@@ -116,3 +116,32 @@ class App extends React.Component{
 export default App
 ```
 
+### redux处理异步
+
+- 安装redux-chunk插件
+
+```javascript
+npm install redux-chunk --save
+```
+
+- 使用applyMiddleware开启thunk中间件
+
+```javascript
+const store=createStore(counter,applyMiddleware(thunk))
+```
+
+- 异步操作中Action可以返回函数，使用dispatch提交action
+
+```javascript
+//延迟执行，拖两天再给
+export function addGUNAsync() {
+    //chunk插件的使用，这里可以返回函数
+    return dispatch=>{
+        setTimeout(()=>{
+            //异步结束后，手动执行dispatch
+            dispatch(addGUN())
+        },2000)
+    }
+}
+```
+

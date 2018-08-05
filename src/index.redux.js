@@ -21,3 +21,14 @@ export function addGUN() {
 export function removeGUN() {
     return {type:REMOVE_GUN}
 }
+
+//延迟执行，拖两天再给
+export function addGUNAsync() {
+    //chunk插件的使用，这里可以返回函数
+    return dispatch=>{
+        setTimeout(()=>{
+            //异步结束后，手动执行dispatch
+            dispatch(addGUN())
+        },2000)
+    }
+}

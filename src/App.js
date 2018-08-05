@@ -6,13 +6,14 @@ class App extends React.Component{
         const store=this.props.store
         const addGUN=this.props.addGUN
         const removeGUN=this.props.removeGUN
+        const addGUNAsync=this.props.addGUNAsync
         const num=store.getState()
         return(
             <div>
                 <h1>现在有机枪{num}把</h1>
-                //5.通过dispatch完成状态的修改
                 <button onClick={()=>store.dispatch(addGUN())}>申请武器</button>
                 <button onClick={()=>store.dispatch(removeGUN())}>上交武器</button>
+                <button onClick={()=>store.dispatch(addGUNAsync())}>延迟发放武器</button>
             </div>
             )
     }
